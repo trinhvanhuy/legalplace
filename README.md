@@ -1,47 +1,59 @@
-# LegalPlace Take-Home Test Specification
+## ATTENTION!
 
-You are a new developer in the Falcon team, and your first job is to add a feature to an old existing piece of code.
+⚠️⚠️⚠️ **IMPORTANT NOTE ABOUT BRANCHING** ⚠️⚠️⚠️
 
-## System specifications
+**IN A REAL PROJECT, I WOULD *NEVER* PUSH DIRECTLY TO THE `master` (or `main`) BRANCH!**
 
-Hi and welcome to the team. We are in the future, and Falcon has extended its activities by opening a pharmacy. Your task is to add a new feature to our system so that we can begin distributing a new drug. First an introduction to our system:
+The proper workflow is to create a *feature branch* for each set of changes, test the changes thoroughly, and then submit a pull request for review.  This allows for collaboration, code review, and prevents breaking the main branch.
 
-- All drugs have an `expiresIn` value which denotes the number of days we have until the item expires.
-- All drugs have a `benefit` value which denotes how powerful the drug is.
-- At the end of each day our system lowers both values for every drug
+**HOWEVER,** in this *isolated test scenario*, there's only one developer (me!), and only one straightforward feature to implement.  Therefore, I've made a **BAD EXCEPTION** and pushed directly to `master`.
 
-But there is more:
+**DO NOT EMULATE THIS WORKFLOW IN A REAL-WORLD PROJECT!**  Always use feature branches, pull requests, and code review to ensure quality and collaboration.
 
-- Once the expiration date has passed, Benefit degrades twice as fast.
-- The Benefit of an item is never negative.
-- "Herbal Tea" actually increases in Benefit the older it gets. Benefit increases twice as fast after the expiration date.
-- The Benefit of an item is never more than 50.
-- "Magic Pill" never expires nor decreases in Benefit.
-- "Fervex", like Herbal Tea, increases in Benefit as its expiration date approaches. Benefit increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but Benefit drops to 0 after the expiration date.
+This decision was solely made to simplify the process for this specific exercise.
 
-We have recently signed a supplier of "Dafalgan". This requires an update to our system:
 
-- "Dafalgan" degrades in Benefit twice as fast as normal drugs.
+## Features
 
-## Instructions
+*   **Drug Types:**
+    *   Normal Drugs: Benefit degrades over time, degrading twice as fast after the expiration date.
+    *   Herbal Tea: Benefit increases over time, increasing twice as fast after the expiration date.
+    *   Fervex: Benefit increases as the expiration date approaches: +1 normally, +2 when expiresIn < 11, +3 when expiresIn < 6. Benefit drops to 0 after the expiration date.
+    *   Magic Pill: Benefit and expiration date never change.
+    *   Dafalgan: Benefit degrades twice as fast as normal drugs.
+*   **Benefit Limits:** The benefit of a drug is never negative and never exceeds 50.
+*   **Expiration Handling:** Correctly manages benefit updates based on expiration dates.
+*   **Constants:** Uses constants for drug names, benefit limits, and degradation/increase rates for maintainability.
 
-- [ ] Create a clone from this repository
-- [ ] Implement the required feature
-- [ ] Push the clone to your own repository when satisfied
-- [ ] Send us the link and tell us approximatively how much time you spent on this assignment
+## Code Structure
 
-You are encouraged to refactor the existing code before adding your own, as you would do if this was a real task in real life. We strongly recommend that you write tests to help you during this process.
+*   **`Drug` Class:** Represents a drug with properties for name, expiration date, and benefit.
+*   **`Pharmacy` Class:** Contains a list of drugs and methods for updating their benefit values.
+    *   **`updateBenefitValue()`:** Iterates through all drugs and calls `updateDrugBenefit` and `updateDrugExpiration`.
+    *   **`updateDrugBenefit()`:** Uses a strategy pattern to update the benefit based on the drug type:
+        *   `updateNormalDrugBenefit()`
+        *   `updateHerbalTeaBenefit()`
+        *   `updateFervexBenefit()`
+        *   `updateDafalganBenefit()`
+    *   **`updateDrugExpiration()`:** Decreases the expiration date for all drugs except "Magic Pill".
+    *   **`increaseBenefit()` and `decreaseBenefit()`:** Helper methods to increase or decrease the benefit while respecting the benefit limits.
+*   **Constants:** Defines constants for drug names (`HERBAL_TEA`, `FERVEX`, `MAGIC_PILL`, `DAFALGAN`), benefit limit (`LIMIT_BENEFIT`), and degradation/increase rates.
 
-Feel free to make any changes to the `updateBenefitValue` method implementation and add any new code as long as everything still works correctly. However, do not break the public API of the `Drug` and `Pharmacy` classes, as those are used by other pieces of the software (you can add new methods though).
+## Unit Tests
 
-Please commit as frequently as possible to make the review easier.
+A comprehensive suite of unit tests is included to ensure the correctness of the benefit update logic.  The tests cover:
 
-We expect you to spend no more than 2 hours on this assignment. We value the quality of the end result, not how much time you have spent on it.
+*   All drug types.
+*   Expiration scenarios (before and after expiration).
+*   Boundary conditions (benefit limits).
+*   Specific business rules for each drug type.
 
-## Test
+Tests ensure each type of Drug is treated correctly, and they check behavior under edge cases.
 
-To make sure that you will not break anything in the existing code, we added the result of the simulation in the _output.json_ file. Make sure that your code is able to generate a file with identical content. You can generate a new file by running the following command:
+Run the tests by running `npm run test`.
 
-```sh
-yarn start
-```
+## Installation
+
+1.  Clone the repository.
+2.  Install the dependencies: `npm install`
+3.  Run the tests: `npm test`
