@@ -1,4 +1,5 @@
-import { Drug, Pharmacy } from "./pharmacy";
+import { Pharmacy } from "./pharmacy";
+import { Drug } from "./entities/drug.entity";
 
 import fs from "fs";
 
