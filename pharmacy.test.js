@@ -1,4 +1,14 @@
-import { Drug, Pharmacy, HERBAL_TEA, FERVEX, MAGIC_PILL } from "./pharmacy";
+import {
+  Drug,
+  Pharmacy,
+  HERBAL_TEA,
+  FERVEX,
+  MAGIC_PILL,
+  DAFALGAN,
+  DAFALGAN_DEGRADE_RATE,
+  DEGRADE_RATE_AFTER_EXPIRATION,
+  INCREASE_RATE_AFTER_EXPIRATION,
+} from "./pharmacy";
 
 describe("Pharmacy", () => {
   it("should update benefit value of a normal drug", () => {
@@ -9,14 +19,14 @@ describe("Pharmacy", () => {
     expect(drug.expiresIn).toBe(1);
   });
 
-  it("should decrease benefit twice as fast when expired", () => {
+  it("should decrease benefit twice as fast when expired (normal drug)", () => {
     const drug = new Drug("Normal Drug", -1, 10);
     const pharmacy = new Pharmacy([drug]);
     pharmacy.updateBenefitValue();
-    expect(drug.benefit).toBe(8);
+    expect(drug.benefit).toBe(10 - DEGRADE_RATE_AFTER_EXPIRATION);
   });
 
-  it("should not decrease benefit below 0", () => {
+  it("should not decrease benefit below 0 (normal drug)", () => {
     const drug = new Drug("Normal Drug", 2, 0);
     const pharmacy = new Pharmacy([drug]);
     pharmacy.updateBenefitValue();
@@ -35,10 +45,10 @@ describe("Pharmacy", () => {
     const drug = new Drug(HERBAL_TEA, -1, 10);
     const pharmacy = new Pharmacy([drug]);
     pharmacy.updateBenefitValue();
-    expect(drug.benefit).toBe(12);
+    expect(drug.benefit).toBe(10 + INCREASE_RATE_AFTER_EXPIRATION);
   });
 
-  it("should not increase benefit above 50", () => {
+  it("should not increase benefit above 50 (Herbal Tea)", () => {
     const drug = new Drug(HERBAL_TEA, 2, 50);
     const pharmacy = new Pharmacy([drug]);
     pharmacy.updateBenefitValue();
@@ -86,10 +96,12 @@ describe("Pharmacy", () => {
   it("should handle multiple drugs", () => {
     const herbalTea = new Drug(HERBAL_TEA, 2, 10);
     const normalDrug = new Drug("Normal Drug", 2, 10);
-    const pharmacy = new Pharmacy([herbalTea, normalDrug]);
+    const fervex = new Drug(FERVEX, 5, 10);
+    const pharmacy = new Pharmacy([herbalTea, normalDrug, fervex]);
     pharmacy.updateBenefitValue();
     expect(herbalTea.benefit).toBe(11);
     expect(normalDrug.benefit).toBe(9);
+    expect(fervex.benefit).toBe(13);
   });
 
   it("should limit benefit to 50", () => {
@@ -115,5 +127,27 @@ describe("Pharmacy", () => {
     const pharmacy = new Pharmacy([drug]);
     pharmacy.updateBenefitValue();
     expect(drug.benefit).toBe(50);
+  });
+
+  it("should update benefit value of Dafalgan", () => {
+    const drug = new Drug(DAFALGAN, 2, 10);
+    const pharmacy = new Pharmacy([drug]);
+    pharmacy.updateBenefitValue();
+    expect(drug.benefit).toBe(10 - DAFALGAN_DEGRADE_RATE);
+    expect(drug.expiresIn).toBe(1);
+  });
+
+  it("should not decrease benefit below 0 (Dafalgan)", () => {
+    const drug = new Drug(DAFALGAN, 2, 1);
+    const pharmacy = new Pharmacy([drug]);
+    pharmacy.updateBenefitValue();
+    expect(drug.benefit).toBe(0);
+  });
+
+  it("should update Dafalgan benefit value with expiration", () => {
+    const drug = new Drug(DAFALGAN, -1, 10);
+    const pharmacy = new Pharmacy([drug]);
+    pharmacy.updateBenefitValue();
+    expect(drug.benefit).toBe(10 - DAFALGAN_DEGRADE_RATE);
   });
 });
