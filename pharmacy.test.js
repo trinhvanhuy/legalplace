@@ -1,6 +1,8 @@
+import { Pharmacy } from "./pharmacy";
+
+import { Drug } from "./entities/drug.entity";
+
 import {
-  Drug,
-  Pharmacy,
   HERBAL_TEA,
   FERVEX,
   MAGIC_PILL,
@@ -8,7 +10,7 @@ import {
   DAFALGAN_DEGRADE_RATE,
   DEGRADE_RATE_AFTER_EXPIRATION,
   INCREASE_RATE_AFTER_EXPIRATION,
-} from "./pharmacy";
+} from "./shared/constants";
 
 describe("Pharmacy", () => {
   it("should update benefit value of a normal drug", () => {

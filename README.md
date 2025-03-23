@@ -29,7 +29,8 @@ This decision was solely made to simplify the process for this specific exercise
 
 *   **`Drug` Class:** Represents a drug with properties for name, expiration date, and benefit.
 *   **`Pharmacy` Class:** Contains a list of drugs and methods for updating their benefit values.
-    *   **`updateBenefitValue()`:** Iterates through all drugs and calls `updateDrugBenefit` and `updateDrugExpiration`.
+    *   **`updateBenefitValue()`:** Iterates through all drugs and calls `PharmacyUtil.updateDrugBenefit` and `PharmacyUtil.updateDrugExpiration`.
+*   **`PharmacyUtil` Class:** Contains methods for updating their benefit values.
     *   **`updateDrugBenefit()`:** Uses a strategy pattern to update the benefit based on the drug type:
         *   `updateNormalDrugBenefit()`
         *   `updateHerbalTeaBenefit()`
